@@ -1,9 +1,9 @@
 import React from "react";
-import Todolist from "./pages/todolist";
+import Router from './shared/Router'
 
 const App = () => {
   return(
-    <Todolist></Todolist>
+    <Router/>
   );
 };
 

@@ -1,6 +1,56 @@
 import React, {useState} from "react";
 import styled from "styled-components";
+import { v4 as uuidv4 } from 'uuid';
+import { useDispatch } from "react-redux";
+//action creator import
+import { addTodo } from "../../redux/modules/todos";
 
+const Form = () => {
+
+    const dispatch = useDispatch();
+    const [inputTodos, setInputTodos] = useState({title:'', desc:''});
+
+    const addHandler = () => {
+        const { title, desc } = inputTodos
+        const todo = {
+            id: uuidv4(),
+            title: title,
+            desc : desc,
+            isDone: false
+        }
+    
+        if (title === '' || desc === '' ) return
+                        
+            dispatch(addTodo(todo));
+    };
+
+    const changeHandler = (event) => {
+        const { name, value } = event.target;
+        setInputTodos({...inputTodos, [name]: value});
+        //비워지는 것 구현 못함.
+    };
+
+    return (
+        <StForm>
+            <StFormLabel>제목:
+                <StFormInput name="title"  onChange={changeHandler}/>
+            </StFormLabel>
+                
+            <StFormLabel>내용:
+                <StFormInput name="desc" label="formDesc" onChange={changeHandler}/>
+            </StFormLabel>
+                
+        
+            <StFormButton 
+                disabled={!inputTodos.title || !inputTodos.desc}
+                onClick={addHandler}
+            >추가하기</StFormButton>
+        </StForm>
+    )
+    
+}
+
+export default Form;
 
 const StForm = styled.div `
     background-color: #ddd;
@@ -15,6 +65,23 @@ const StForm = styled.div `
     display: flex;
     align-items: center;
     justify-content: space-between;
+    /* gap: 20px; */
+`
+
+const StFormLabel = styled.label`
+    width: fit-content;
+    
+    display: flex;
+    align-items: center;
+    /* justify-content: space-between; */
+`
+
+const StFormInput = styled.input `
+width: 20vw;
+height: 4vh;
+border: 1.6px solid black;
+border-radius: 8px;
+margin-left: 10px;
 `
 
 const StFormButton = styled.button `
@@ -23,6 +90,9 @@ const StFormButton = styled.button `
     border: 1.6px solid black;
     border-radius: 8px;
 
+    /* display: flex; */
+    /* justify-content: right; */
+
     font-size: 1rem;
 
     &:hover{
@@ -30,42 +100,4 @@ const StFormButton = styled.button `
         color: white;
         font-weight: bold;
     }
-
-    
-    /* display: flex;
-    align-items: center;
-    justify-content: right; */
 `
-
-const StFormInput = styled.input `
-width: 20vw;
-height: 4vh;
-border: 1.6px solid black;
-border-radius: 8px;
-
-/* display: flex;
-align-items: center;
-justify-content: left; */
-`
-
-
-const Form = ({addTodo}) => {
-    const [title, setTitle] = useState('');
-    const [desc, setDesc] = useState('');
-
-    return (
-        <StForm>
-            제목<StFormInput type='text' value={title} onChange={(event)=>setTitle(event.target.value)}/>
-            내용<StFormInput type='text' value={desc} onChange={(event)=>setDesc(event.target.value)}/>
-            <StFormButton onClick={() => {
-                if (title !== '' && desc !== '' ){
-                    addTodo(title, desc)
-                    setTitle('');
-                    setDesc('');
-                }
-            }}>추가하기</StFormButton>
-        </StForm>
-    )
-}
-
-export default Form;
